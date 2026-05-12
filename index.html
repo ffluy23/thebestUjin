@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+@font-face {
+    font-family: 'OngleipParkDahyeon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SandollSamlipHobbangBasic';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Basic.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+}
+
+*{
+  -webkit-tap-highlight-color: transparent;}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.pokemon-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 22px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #7c3aed;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'SandollSamlipHobbangBasic', sans-serif;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.22);
+}
+
+.pokemon-btn:hover {
+  background: #6d28d9;
+  transform: translateY(-2px);
+}
+
+.pokemon-btn:active {
+  transform: scale(0.98);
+}
+
+.ball-icon {
+  width: 20px;
+  height: 20px;
+
+  fill: white;
+  opacity: 0.95;
+
+  transition: transform 0.6s ease;
+}
+
+.pokemon-btn:hover .ball-icon {
+  transform: rotate(360deg);
+}
+
+.pokemon-btn span {
+  letter-spacing: 0.3px;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+	touch-action: manipulation;
+}
+
+.image-wrapper img {
+    width: 80vw;
+    max-width: 420px;
+    height: auto;
+    border-radius: 16px;
+    display: block;
+}
+
+/* 말풍선 */
+.click-bubble {
+    position: absolute;
+    bottom: 105%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 12px 18px;
+    border-radius: 20px;
+    font-family: 'OngleipParkDahyeon', sans-serif;
+    font-size: clamp(14px, 4vw, 20px);
+    max-width: 95vw;
+    text-align: center;
+    white-space: normal;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* 말풍선 꼬리 */
+.click-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px 8px 0 8px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+/* 캐릭터 애니메이션 */
+.pop-character {
+    animation: bubblePop 0.25s ease-out;
+}
+
+@keyframes bubblePop {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(0.92); }
+    70%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pop-bubble {
+    animation: bubblePopBubble 0.25s ease-out;
+}
+
+@keyframes bubblePopBubble {
+    0%   { transform: translateX(-50%) scale(1); }
+    30%  { transform: translateX(-50%) scale(0.92); }
+    70%  { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+.show {
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="container">   
+<div class="image-wrapper" id="character">
+    <img src="https://divine-tan-pexebjswgl.edgeone.app/1316_20260510025302.png" width="300">
+    <div class="click-bubble" id="bubble"></div>
+</div>
+    <button class="pokemon-btn" onclick="location.href='pixel.html'"><svg
+    class="ball-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M14.5 12a2.5 2.5 0 0 1-5 0a2.5 2.5 0 0 1 5 0m7.5 0c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2s10 4.48 10 10m-2 0h-4c0-2.21-1.79-4-4-4s-4 1.79-4 4H4c0 4.41 3.59 8 8 8s8-3.59 8-8"
+    />
+  </svg>
+  <span>Catch!</span>
+    </button>
+</div> 
+
+<script>
+const messages = [
+    "...후후.",
+    "이런이런...",
+    "...그만 놀려주지않겠어?",
+    "나를 너무 좋아하는 건 알겠다만.",
+    "후후후.",
+    "날 너무 좋아하는군.",
+    "이런이런~. 알겠어 알겠다고."
+];
+
+const wrapper = document.getElementById("character");
+const bubble = document.getElementById("bubble");
+
+let hideTimer;
+let lastIndex = -1;
+
+wrapper.addEventListener("click", () => {
+
+    let randomIndex;
+
+    do {
+        randomIndex = Math.floor(Math.random() * messages.length);
+    } while (randomIndex === lastIndex);
+
+    lastIndex = randomIndex;
+    bubble.textContent = messages[randomIndex];
+
+    wrapper.classList.remove("pop-character");
+    bubble.classList.remove("pop-bubble");
+    void wrapper.offsetWidth;
+
+    wrapper.classList.add("pop-character");
+    bubble.classList.add("pop-bubble");
+
+    bubble.classList.add("show");
+
+    clearTimeout(hideTimer);
+
+    hideTimer = setTimeout(() => {
+        bubble.classList.remove("show");
+    }, 5000);
+});
+</script>
+
+</body>
+</html>
